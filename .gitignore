@@ -1,3 +1,4 @@
 token.txt
 info.txt
 .DS_Store
+__pycache__/

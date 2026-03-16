@@ -4,16 +4,13 @@ email: chunye@umich.edu
 sections:
   Reading Notes:
     Etale Cohomology:
-      files:
-        - title: Descent Theory
-          path: Descent theory.pdf
-        - title: Etale and Smooth Morphisms
-          path: Etale and smooth morphisms.pdf
-        - title: Etale Covering Spaces
-          path: Etale covering spaces.pdf
+      - Descent theory
+      - Etale and smooth morphisms
+      - Etale covering spaces
 
-    Intro to Homological Algebra:
-      - title: Intro to Homological Algebra
-        path: Intro to Homological Algebra.pdf
+    Intro to Homological Algebra: Intro to Homological Algebra
 
-  Research & Publications: {}
+    Rising Sea Notes and Exercises: Blow-up
+
+  Research & Publications:
+    Representation stability in the (co)homology of vertical configuration spaces: https://arxiv.org/abs/2212.13227

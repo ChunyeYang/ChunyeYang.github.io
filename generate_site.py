@@ -1,7 +1,12 @@
 from __future__ import annotations
 
+import argparse
 import html
+import os
 import re
+import subprocess
+import tempfile
+import textwrap
 import unicodedata
 from pathlib import Path
 from urllib.parse import quote
@@ -12,12 +17,21 @@ import yaml
 ROOT = Path(__file__).resolve().parent
 DATA_FILE = ROOT / "site.yaml"
 TOPICS_DIR = ROOT / "topics"
+STATIC_FILES = (".gitignore", "index.html", "styles.css", "site.yaml", "generate_site.py", "README.md")
 
 
 def slugify(value: str) -> str:
     normalized = unicodedata.normalize("NFKD", value).encode("ascii", "ignore").decode("ascii")
     slug = re.sub(r"[^a-zA-Z0-9]+", "-", normalized.lower()).strip("-")
     return slug or "topic"
+
+
+def is_url(value: str) -> bool:
+    return value.startswith("http://") or value.startswith("https://")
+
+
+def pdf_path_from_title(title: str) -> str:
+    return f"{title}.pdf"
 
 
 def asset_href(path: str, prefix: str = "") -> str:
@@ -58,50 +72,89 @@ def aside_html(name: str, email: str, home_href: str) -> str:
       </aside>"""
 
 
-def normalize_file_entry(entry: object) -> dict[str, str]:
-    if isinstance(entry, str):
-        path = entry
-        title = Path(entry).stem
+def normalize_pdf_item(item: object) -> dict[str, str]:
+    if isinstance(item, str):
+        return {"title": item, "path": pdf_path_from_title(item)}
+
+    if not isinstance(item, dict):
+        raise TypeError("Each PDF item must be a string or mapping.")
+
+    if "title" in item:
+        title = str(item["title"])
+        path = str(item.get("path") or pdf_path_from_title(title))
         return {"title": title, "path": path}
 
-    if not isinstance(entry, dict):
-        raise TypeError("Each file entry must be a string or mapping.")
-
-    path = entry.get("path") or entry.get("file")
-    if not path:
-        raise ValueError("Each file mapping must include `path`.")
-
-    title = entry.get("title") or Path(path).stem
-    return {"title": str(title), "path": str(path)}
+    raise ValueError("Each PDF mapping must include `title`.")
 
 
 def normalize_topic_entry(entry: object) -> dict[str, object]:
+    if isinstance(entry, str):
+        if is_url(entry):
+            return {"kind": "external", "href": entry}
+        pdf = normalize_pdf_item(entry)
+        return {"kind": "pdf", "files": [pdf]}
+
     if isinstance(entry, list):
-        files = [normalize_file_entry(item) for item in entry]
-        return {"files": files, "external_url": None}
+        if len(entry) == 1 and isinstance(entry[0], str) and is_url(entry[0]):
+            return {"kind": "external", "href": entry[0]}
+
+        files = [normalize_pdf_item(item) for item in entry]
+        if len(files) == 1:
+            return {"kind": "pdf", "files": files}
+        return {"kind": "topic_page", "files": files}
 
     if not isinstance(entry, dict):
-        raise TypeError("Each topic entry must be a list or mapping.")
+        raise TypeError("Each topic entry must be a string, list, or mapping.")
 
-    raw_files = entry.get("files", entry.get("pdfs"))
-    if raw_files is None:
-        raw_files = [value for key, value in entry.items() if key not in {"external_url", "external_label"}]
-        if len(raw_files) == 1 and isinstance(raw_files[0], list):
-            raw_files = raw_files[0]
+    if "link" in entry or "url" in entry or "external_url" in entry:
+        href = str(entry.get("link") or entry.get("url") or entry.get("external_url"))
+        return {"kind": "external", "href": href}
 
-    if raw_files is None:
-        raw_files = []
+    if "files" in entry or "pdfs" in entry:
+        raw_files = entry.get("files") or entry.get("pdfs") or []
+        files = [normalize_pdf_item(item) for item in raw_files]
+        if len(files) == 1:
+            return {"kind": "pdf", "files": files}
+        return {"kind": "topic_page", "files": files}
 
-    files = [normalize_file_entry(item) for item in raw_files]
-    return {
-        "files": files,
-        "external_url": entry.get("external_url"),
-        "external_label": entry.get("external_label", "External"),
-    }
+    if "title" in entry:
+        pdf = normalize_pdf_item(entry)
+        return {"kind": "pdf", "files": [pdf]}
+
+    raise ValueError("Unsupported topic entry format.")
 
 
 def topic_page_filename(section_name: str, topic_name: str) -> str:
     return f"{slugify(section_name)}--{slugify(topic_name)}.html"
+
+
+def load_site_data() -> dict[str, object]:
+    data = yaml.safe_load(DATA_FILE.read_text(encoding="utf-8"))
+    if not isinstance(data, dict):
+        raise ValueError("site.yaml must define a top-level mapping.")
+    if "sections" not in data:
+        raise ValueError("site.yaml must include `sections`.")
+    return data
+
+
+def collect_referenced_pdfs(data: dict[str, object]) -> list[str]:
+    pdf_paths: list[str] = []
+    sections = data["sections"]
+    for topics in sections.values():
+        if not topics:
+            continue
+        for raw_topic in topics.values():
+            topic = normalize_topic_entry(raw_topic)
+            for file_entry in topic.get("files", []):
+                pdf_paths.append(str(file_entry["path"]))
+    return pdf_paths
+
+
+def validate_pdf_files(pdf_paths: list[str]) -> None:
+    missing = [path for path in pdf_paths if not (ROOT / path).exists()]
+    if missing:
+        formatted = "\n".join(f"- {path}" for path in missing)
+        raise FileNotFoundError(f"Referenced PDF files are missing:\n{formatted}")
 
 
 def render_index(data: dict[str, object]) -> str:
@@ -123,35 +176,28 @@ def render_index(data: dict[str, object]) -> str:
         items: list[str] = []
         for topic_name, raw_topic in topics.items():
             topic = normalize_topic_entry(raw_topic)
-            files = topic["files"]
-            external_url = topic.get("external_url")
-            external_label = topic.get("external_label", "External")
+            kind = str(topic["kind"])
 
-            if not files:
-                continue
-
-            if len(files) == 1:
-                href = asset_href(files[0]["path"])
+            if kind == "external":
+                href = str(topic["href"])
+                link_attrs = ' target="_blank" rel="noopener"'
+                meta = "Link"
+            elif kind == "pdf":
+                file_entry = topic["files"][0]
+                href = asset_href(str(file_entry["path"]))
                 link_attrs = ' target="_blank" rel="noopener"'
                 meta = "PDF"
             else:
-                href = f"topics/{topic_page_filename(section_name, topic_name)}"
+                files = topic["files"]
+                href = f"topics/{topic_page_filename(str(section_name), str(topic_name))}"
                 link_attrs = ""
                 meta = f"{len(files)} PDFs"
-
-            aux_link = ""
-            if external_url:
-                aux_link = (
-                    f'<a class="aux-link" href="{html.escape(str(external_url))}" '
-                    f'target="_blank" rel="noopener">{html.escape(str(external_label))}</a>'
-                )
 
             items.append(
                 f"""            <li>
               <div class="topic-main">
                 <div class="topic-link-row">
                   <a class="topic-link" href="{href}"{link_attrs}>{html.escape(str(topic_name))}</a>
-                  {aux_link}
                 </div>
               </div>
               <span class="topic-meta">{html.escape(meta)}</span>
@@ -180,7 +226,7 @@ def render_index(data: dict[str, object]) -> str:
 {chr(10).join(panels)}
 
         <footer class="page-footer">
-          Update <code>site.yaml</code> and rerun <code>python3 generate_site.py</code> to refresh the site.
+          Run <code>python3 generate_site.py deploy</code> to regenerate and publish the site.
         </footer>
       </section>
     </main>"""
@@ -200,20 +246,11 @@ def render_topic_page(
     for file_entry in topic["files"]:
         documents.append(
             f"""          <li>
-            <a class="document-link" href="{asset_href(file_entry["path"], "../")}" target="_blank" rel="noopener">
-              {html.escape(file_entry["title"])}
+            <a class="document-link" href="{asset_href(str(file_entry["path"]), "../")}" target="_blank" rel="noopener">
+              {html.escape(str(file_entry["title"]))}
             </a>
             <span class="document-meta">PDF</span>
           </li>"""
-        )
-
-    external_url = topic.get("external_url")
-    external_html = ""
-    if external_url:
-        external_label = topic.get("external_label", "External")
-        external_html = (
-            f'<a class="aux-link" href="{html.escape(str(external_url))}" '
-            f'target="_blank" rel="noopener">{html.escape(str(external_label))}</a>'
         )
 
     content = f"""    <main class="page">
@@ -223,7 +260,6 @@ def render_topic_page(
         <p class="breadcrumbs"><a href="../index.html">Home</a> / {html.escape(section_name)}</p>
         <div class="page-title-row">
           <h2 class="page-title">{html.escape(topic_name)}</h2>
-          {external_html}
         </div>
 
         <div class="panel">
@@ -241,9 +277,14 @@ def render_topic_page(
     return page_shell(f"{topic_name} | {name}", content, root_prefix="../")
 
 
-def main() -> None:
-    data = yaml.safe_load(DATA_FILE.read_text(encoding="utf-8"))
+def build_site() -> dict[str, object]:
+    data = load_site_data()
+    pdf_paths = collect_referenced_pdfs(data)
+    validate_pdf_files(pdf_paths)
+
     TOPICS_DIR.mkdir(exist_ok=True)
+    for old_page in TOPICS_DIR.glob("*.html"):
+        old_page.unlink()
 
     (ROOT / "index.html").write_text(render_index(data), encoding="utf-8")
 
@@ -252,12 +293,15 @@ def main() -> None:
     sections = data["sections"]
 
     for section_name, topics in sections.items():
+        if not topics:
+            continue
+
         for topic_name, raw_topic in topics.items():
             topic = normalize_topic_entry(raw_topic)
-            if len(topic["files"]) <= 1:
+            if topic["kind"] != "topic_page":
                 continue
 
-            output = TOPICS_DIR / topic_page_filename(section_name, topic_name)
+            output = TOPICS_DIR / topic_page_filename(str(section_name), str(topic_name))
             output.write_text(
                 render_topic_page(
                     name=name,
@@ -268,6 +312,107 @@ def main() -> None:
                 ),
                 encoding="utf-8",
             )
+
+    return data
+
+
+def git(args: list[str], *, env: dict[str, str] | None = None, capture_output: bool = False) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(
+        ["git", *args],
+        check=True,
+        cwd=ROOT,
+        env=env,
+        text=True,
+        capture_output=capture_output,
+    )
+
+
+def build_git_env() -> tuple[dict[str, str], str | None]:
+    env = os.environ.copy()
+    token_file = ROOT / "token.txt"
+    if not token_file.exists():
+        return env, None
+
+    remote_url = git(["remote", "get-url", "origin"], capture_output=True).stdout.strip()
+    username = "git"
+    match = re.search(r"github\.com[:/]([^/]+)/", remote_url)
+    if match:
+        username = match.group(1)
+
+    token = token_file.read_text(encoding="utf-8").strip()
+    askpass = tempfile.NamedTemporaryFile("w", delete=False, prefix="codex-askpass-", suffix=".sh")
+    askpass.write(
+        textwrap.dedent(
+            f"""\
+            #!/bin/sh
+            case "$1" in
+              *Username*) printf '%s\\n' '{username}' ;;
+              *Password*) printf '%s\\n' '{token}' ;;
+              *) printf '\\n' ;;
+            esac
+            """
+        )
+    )
+    askpass.flush()
+    askpass.close()
+    os.chmod(askpass.name, 0o700)
+
+    env["GIT_ASKPASS"] = askpass.name
+    env["GIT_TERMINAL_PROMPT"] = "0"
+    return env, askpass.name
+
+
+def deploy_site() -> None:
+    data = build_site()
+    pdf_paths = collect_referenced_pdfs(data)
+    git_env, askpass_path = build_git_env()
+
+    try:
+        stage_targets = [*STATIC_FILES, "topics", *pdf_paths]
+        git(["add", "-A", "--", *stage_targets], env=git_env)
+
+        diff = git(["diff", "--cached", "--quiet"], env=git_env)
+        if diff.returncode == 0:
+            return
+    except subprocess.CalledProcessError as exc:
+        if exc.returncode != 1:
+            if askpass_path:
+                Path(askpass_path).unlink(missing_ok=True)
+            raise
+    else:
+        if askpass_path:
+            Path(askpass_path).unlink(missing_ok=True)
+        return
+
+    try:
+        git(["commit", "-m", "Deploy site update"], env=git_env)
+        git(["push", "origin", "main"], env=git_env)
+        git(["branch", "-f", "gh-pages", "main"], env=git_env)
+        git(["push", "origin", "gh-pages"], env=git_env)
+    finally:
+        if askpass_path:
+            Path(askpass_path).unlink(missing_ok=True)
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Generate and deploy the personal website.")
+    parser.add_argument(
+        "command",
+        nargs="?",
+        default="build",
+        choices=("build", "deploy"),
+        help="Use `build` to regenerate HTML only, or `deploy` to build, commit, and push.",
+    )
+    return parser.parse_args()
+
+
+def main() -> None:
+    args = parse_args()
+    if args.command == "deploy":
+        deploy_site()
+        return
+
+    build_site()
 
 
 if __name__ == "__main__":
