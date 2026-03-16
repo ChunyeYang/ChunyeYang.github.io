@@ -217,17 +217,7 @@ def render_index(data: dict[str, object]) -> str:
 {aside_html(name, email, "index.html")}
 
       <section class="page-content">
-        <p class="intro">
-          A minimal academic homepage for reading notes, research materials, and
-          publications. Topic order and document order are generated directly from
-          the YAML file that defines the site.
-        </p>
-
 {chr(10).join(panels)}
-
-        <footer class="page-footer">
-          Run <code>python3 generate_site.py deploy</code> to regenerate and publish the site.
-        </footer>
       </section>
     </main>"""
 
