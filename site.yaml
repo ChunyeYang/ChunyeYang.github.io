@@ -1,0 +1,19 @@
+name: Chunye Yang
+email: chunye@umich.edu
+
+sections:
+  Reading Notes:
+    Etale Cohomology:
+      files:
+        - title: Descent Theory
+          path: Descent theory.pdf
+        - title: Etale and Smooth Morphisms
+          path: Etale and smooth morphisms.pdf
+        - title: Etale Covering Spaces
+          path: Etale covering spaces.pdf
+
+    Intro to Homological Algebra:
+      - title: Intro to Homological Algebra
+        path: Intro to Homological Algebra.pdf
+
+  Research & Publications: {}

@@ -4,244 +4,62 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Chunye Yang | Personal Website</title>
-    <style>
-      :root {
-        color-scheme: light;
-        --paper: #faf8f1;
-        --paper-deep: #f0ecdf;
-        --ink: #1a1a1a;
-        --muted: #6b685f;
-        --line: rgba(26, 26, 26, 0.14);
-        --accent: #2e3d4f;
-      }
-
-      * {
-        box-sizing: border-box;
-      }
-
-      body {
-        margin: 0;
-        min-height: 100vh;
-        padding: 40px 24px;
-        background:
-          linear-gradient(180deg, rgba(255, 255, 255, 0.55), transparent 24%),
-          linear-gradient(180deg, var(--paper) 0%, var(--paper-deep) 100%);
-        color: var(--ink);
-        font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
-      }
-
-      main {
-        width: min(980px, 100%);
-        margin: 0 auto;
-        display: grid;
-        grid-template-columns: minmax(220px, 290px) minmax(0, 1fr);
-        border-top: 1px solid var(--ink);
-        animation: settle 560ms ease-out both;
-      }
-
-      aside {
-        padding: 32px 28px 32px 0;
-        border-right: 1px solid var(--line);
-      }
-
-      section {
-        padding: 32px 0 0 40px;
-      }
-
-      h1 {
-        margin: 0 0 12px;
-        font-size: clamp(40px, 6vw, 68px);
-        line-height: 0.96;
-        letter-spacing: -0.03em;
-        font-weight: 400;
-      }
-
-      .role {
-        margin: 0 0 28px;
-        color: var(--muted);
-        font-size: 13px;
-        letter-spacing: 0.18em;
-        text-transform: uppercase;
-      }
-
-      .contact {
-        padding-top: 18px;
-        border-top: 1px solid var(--line);
-      }
-
-      .label {
-        margin: 0 0 8px;
-        color: var(--muted);
-        font-size: 12px;
-        letter-spacing: 0.16em;
-        text-transform: uppercase;
-      }
-
-      .contact a,
-      .resource-list a {
-        color: inherit;
-        text-decoration: none;
-      }
-
-      .contact a:hover,
-      .resource-list a:hover {
-        color: var(--accent);
-      }
-
-      .contact p {
-        margin: 0;
-        font-size: 18px;
-        line-height: 1.7;
-      }
-
-      .intro {
-        max-width: 56ch;
-        margin: 0 0 40px;
-        color: var(--muted);
-        font-size: 18px;
-        line-height: 1.85;
-      }
-
-      .panel {
-        padding: 24px 0;
-        border-top: 1px solid var(--line);
-      }
-
-      .panel:first-of-type {
-        padding-top: 0;
-        border-top: 0;
-      }
-
-      h2 {
-        margin: 0 0 16px;
-        font-size: 18px;
-        font-weight: 400;
-        letter-spacing: 0.02em;
-      }
-
-      .resource-list {
-        margin: 0;
-        padding: 0;
-        list-style: none;
-      }
-
-      .resource-list li {
-        display: flex;
-        justify-content: space-between;
-        gap: 16px;
-        align-items: baseline;
-        padding: 14px 0;
-        border-top: 1px solid var(--line);
-      }
-
-      .resource-list li:first-child {
-        border-top: 0;
-        padding-top: 0;
-      }
-
-      .resource-name {
-        font-size: 18px;
-        line-height: 1.5;
-      }
-
-      .resource-meta {
-        flex: 0 0 auto;
-        color: var(--muted);
-        font-size: 12px;
-        letter-spacing: 0.14em;
-        text-transform: uppercase;
-      }
-
-      footer {
-        margin-top: 26px;
-        color: var(--muted);
-        font-size: 14px;
-        line-height: 1.7;
-      }
-
-      @keyframes settle {
-        from {
-          opacity: 0;
-          transform: translateY(16px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-
-      @media (max-width: 780px) {
-        body {
-          padding: 24px 18px;
-        }
-
-        main {
-          grid-template-columns: 1fr;
-        }
-
-        aside {
-          padding: 24px 0 28px;
-          border-right: 0;
-          border-bottom: 1px solid var(--line);
-        }
-
-        section {
-          padding: 28px 0 0;
-        }
-
-        .resource-list li {
-          flex-direction: column;
-          align-items: flex-start;
-          gap: 6px;
-        }
-      }
-    </style>
+    <link rel="stylesheet" href="styles.css">
   </head>
   <body>
-    <main>
-      <aside>
-        <h1>Chunye Yang</h1>
-        <p class="role">Personal Website</p>
+    <main class="page">
+      <aside class="page-aside">
+        <h1 class="site-name">Chunye Yang</h1>
+        <p class="site-role">Personal Website</p>
 
-        <div class="contact">
+        <div class="contact-block">
           <p class="label">Email</p>
           <p><a href="mailto:chunye@umich.edu">chunye@umich.edu</a></p>
         </div>
+
+        <div class="contact-block">
+          <p class="label">Navigation</p>
+          <p><a href="index.html">Home</a></p>
+        </div>
       </aside>
 
-      <section>
+      <section class="page-content">
         <p class="intro">
-          A minimal academic homepage for lecture notes, research materials, and
-          publications. The entries below currently use the two PDF files already
-          present in this repository as placeholders.
+          A minimal academic homepage for reading notes, research materials, and
+          publications. Topic order and document order are generated directly from
+          the YAML file that defines the site.
         </p>
 
         <div class="panel">
-          <h2>Lecture Notes</h2>
-          <ul class="resource-list">
+          <h2 class="section-title">Reading Notes</h2>
+          <ul class="topic-list">
             <li>
-              <a class="resource-name" href="follandsol.pdf" target="_blank" rel="noopener">
-                Folland Solutions
-              </a>
-              <span class="resource-meta">PDF</span>
+              <div class="topic-main">
+                <div class="topic-link-row">
+                  <a class="topic-link" href="topics/reading-notes--etale-cohomology.html">Etale Cohomology</a>
+                  
+                </div>
+              </div>
+              <span class="topic-meta">3 PDFs</span>
+            </li>
+            <li>
+              <div class="topic-main">
+                <div class="topic-link-row">
+                  <a class="topic-link" href="Intro%20to%20Homological%20Algebra.pdf" target="_blank" rel="noopener">Intro to Homological Algebra</a>
+                  
+                </div>
+              </div>
+              <span class="topic-meta">PDF</span>
             </li>
           </ul>
         </div>
-
         <div class="panel">
-          <h2>Research &amp; Publications</h2>
-          <ul class="resource-list">
-            <li>
-              <a class="resource-name" href="Folland修正.pdf" target="_blank" rel="noopener">
-                Folland 修正
-              </a>
-              <span class="resource-meta">PDF</span>
-            </li>
-          </ul>
+          <h2 class="section-title">Research &amp; Publications</h2>
+          <p class="section-note">Content forthcoming.</p>
         </div>
 
-        <footer>
-          More notes and publication links can be added by extending the two lists above.
+        <footer class="page-footer">
+          Update <code>site.yaml</code> and rerun <code>python3 generate_site.py</code> to refresh the site.
         </footer>
       </section>
     </main>
