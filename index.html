@@ -3,13 +3,16 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Chunye Yang</title>
+    <title>Chunye Yang | Personal Website</title>
     <style>
       :root {
         color-scheme: light;
-        --bg: #f5efe6;
-        --fg: #18202a;
-        --accent: #b85c38;
+        --paper: #faf8f1;
+        --paper-deep: #f0ecdf;
+        --ink: #1a1a1a;
+        --muted: #6b685f;
+        --line: rgba(26, 26, 26, 0.14);
+        --accent: #2e3d4f;
       }
 
       * {
@@ -19,55 +22,228 @@
       body {
         margin: 0;
         min-height: 100vh;
-        display: grid;
-        place-items: center;
-        padding: 24px;
+        padding: 40px 24px;
         background:
-          radial-gradient(circle at top, rgba(184, 92, 56, 0.14), transparent 40%),
-          linear-gradient(180deg, #f7f0e7 0%, var(--bg) 100%);
-        color: var(--fg);
-        font-family: Georgia, "Times New Roman", serif;
+          linear-gradient(180deg, rgba(255, 255, 255, 0.55), transparent 24%),
+          linear-gradient(180deg, var(--paper) 0%, var(--paper-deep) 100%);
+        color: var(--ink);
+        font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
       }
 
       main {
-        width: min(720px, 100%);
-        padding: 48px 40px;
-        border: 1px solid rgba(24, 32, 42, 0.1);
-        background: rgba(255, 255, 255, 0.72);
-        backdrop-filter: blur(8px);
-        box-shadow: 0 24px 60px rgba(24, 32, 42, 0.08);
+        width: min(980px, 100%);
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: minmax(220px, 290px) minmax(0, 1fr);
+        border-top: 1px solid var(--ink);
+        animation: settle 560ms ease-out both;
       }
 
-      p {
+      aside {
+        padding: 32px 28px 32px 0;
+        border-right: 1px solid var(--line);
+      }
+
+      section {
+        padding: 32px 0 0 40px;
+      }
+
+      h1 {
+        margin: 0 0 12px;
+        font-size: clamp(40px, 6vw, 68px);
+        line-height: 0.96;
+        letter-spacing: -0.03em;
+        font-weight: 400;
+      }
+
+      .role {
+        margin: 0 0 28px;
+        color: var(--muted);
+        font-size: 13px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+      }
+
+      .contact {
+        padding-top: 18px;
+        border-top: 1px solid var(--line);
+      }
+
+      .label {
+        margin: 0 0 8px;
+        color: var(--muted);
+        font-size: 12px;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+      }
+
+      .contact a,
+      .resource-list a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      .contact a:hover,
+      .resource-list a:hover {
+        color: var(--accent);
+      }
+
+      .contact p {
         margin: 0;
         font-size: 18px;
         line-height: 1.7;
       }
 
-      .eyebrow {
-        margin-bottom: 16px;
-        color: var(--accent);
-        font-size: 13px;
-        font-weight: 700;
-        letter-spacing: 0.24em;
+      .intro {
+        max-width: 56ch;
+        margin: 0 0 40px;
+        color: var(--muted);
+        font-size: 18px;
+        line-height: 1.85;
+      }
+
+      .panel {
+        padding: 24px 0;
+        border-top: 1px solid var(--line);
+      }
+
+      .panel:first-of-type {
+        padding-top: 0;
+        border-top: 0;
+      }
+
+      h2 {
+        margin: 0 0 16px;
+        font-size: 18px;
+        font-weight: 400;
+        letter-spacing: 0.02em;
+      }
+
+      .resource-list {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .resource-list li {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        align-items: baseline;
+        padding: 14px 0;
+        border-top: 1px solid var(--line);
+      }
+
+      .resource-list li:first-child {
+        border-top: 0;
+        padding-top: 0;
+      }
+
+      .resource-name {
+        font-size: 18px;
+        line-height: 1.5;
+      }
+
+      .resource-meta {
+        flex: 0 0 auto;
+        color: var(--muted);
+        font-size: 12px;
+        letter-spacing: 0.14em;
         text-transform: uppercase;
       }
 
-      h1 {
-        margin: 0 0 18px;
-        font-size: clamp(42px, 7vw, 72px);
-        line-height: 0.95;
+      footer {
+        margin-top: 26px;
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.7;
+      }
+
+      @keyframes settle {
+        from {
+          opacity: 0;
+          transform: translateY(16px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @media (max-width: 780px) {
+        body {
+          padding: 24px 18px;
+        }
+
+        main {
+          grid-template-columns: 1fr;
+        }
+
+        aside {
+          padding: 24px 0 28px;
+          border-right: 0;
+          border-bottom: 1px solid var(--line);
+        }
+
+        section {
+          padding: 28px 0 0;
+        }
+
+        .resource-list li {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 6px;
+        }
       }
     </style>
   </head>
   <body>
     <main>
-      <div class="eyebrow">GitHub Pages</div>
-      <h1>Site in Progress</h1>
-      <p>
-        This repository is ready for deployment. The full website design and content
-        will be added next.
-      </p>
+      <aside>
+        <h1>Chunye Yang</h1>
+        <p class="role">Personal Website</p>
+
+        <div class="contact">
+          <p class="label">Email</p>
+          <p><a href="mailto:chunye@umich.edu">chunye@umich.edu</a></p>
+        </div>
+      </aside>
+
+      <section>
+        <p class="intro">
+          A minimal academic homepage for lecture notes, research materials, and
+          publications. The entries below currently use the two PDF files already
+          present in this repository as placeholders.
+        </p>
+
+        <div class="panel">
+          <h2>Lecture Notes</h2>
+          <ul class="resource-list">
+            <li>
+              <a class="resource-name" href="follandsol.pdf" target="_blank" rel="noopener">
+                Folland Solutions
+              </a>
+              <span class="resource-meta">PDF</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="panel">
+          <h2>Research &amp; Publications</h2>
+          <ul class="resource-list">
+            <li>
+              <a class="resource-name" href="Folland修正.pdf" target="_blank" rel="noopener">
+                Folland 修正
+              </a>
+              <span class="resource-meta">PDF</span>
+            </li>
+          </ul>
+        </div>
+
+        <footer>
+          More notes and publication links can be added by extending the two lists above.
+        </footer>
+      </section>
     </main>
   </body>
 </html>
