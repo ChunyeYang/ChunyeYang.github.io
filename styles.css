@@ -142,7 +142,7 @@ a:hover {
   display: flex;
   justify-content: space-between;
   gap: 16px;
-  align-items: baseline;
+  align-items: flex-start;
   padding: 14px 0;
   border-top: 1px solid var(--line);
 }
@@ -161,6 +161,14 @@ a:hover {
 .document-link {
   font-size: 18px;
   line-height: 1.5;
+}
+
+.item-description {
+  margin: 6px 0 0;
+  max-width: 56ch;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.7;
 }
 
 .topic-link-row,
@@ -195,6 +203,10 @@ a:hover {
   margin-top: 26px;
   color: var(--muted);
   font-size: 14px;
+}
+
+.page-description {
+  margin-bottom: 24px;
 }
 
 @keyframes settle {

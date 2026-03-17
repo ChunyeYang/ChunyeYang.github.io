@@ -72,9 +72,9 @@ def aside_html(name: str, email: str, home_href: str) -> str:
       </aside>"""
 
 
-def normalize_pdf_item(item: object) -> dict[str, str]:
+def normalize_pdf_item(item: object) -> dict[str, str | None]:
     if isinstance(item, str):
-        return {"title": item, "path": pdf_path_from_title(item)}
+        return {"title": item, "path": pdf_path_from_title(item), "description": None}
 
     if not isinstance(item, dict):
         raise TypeError("Each PDF item must be a string or mapping.")
@@ -82,7 +82,12 @@ def normalize_pdf_item(item: object) -> dict[str, str]:
     if "title" in item:
         title = str(item["title"])
         path = str(item.get("path") or pdf_path_from_title(title))
-        return {"title": title, "path": path}
+        description = item.get("description")
+        return {
+            "title": title,
+            "path": path,
+            "description": None if description is None else str(description),
+        }
 
     raise ValueError("Each PDF mapping must include `title`.")
 
@@ -90,36 +95,44 @@ def normalize_pdf_item(item: object) -> dict[str, str]:
 def normalize_topic_entry(entry: object) -> dict[str, object]:
     if isinstance(entry, str):
         if is_url(entry):
-            return {"kind": "external", "href": entry}
+            return {"kind": "external", "href": entry, "description": None}
         pdf = normalize_pdf_item(entry)
-        return {"kind": "pdf", "files": [pdf]}
+        return {"kind": "pdf", "files": [pdf], "description": None}
 
     if isinstance(entry, list):
         if len(entry) == 1 and isinstance(entry[0], str) and is_url(entry[0]):
-            return {"kind": "external", "href": entry[0]}
+            return {"kind": "external", "href": entry[0], "description": None}
 
         files = [normalize_pdf_item(item) for item in entry]
         if len(files) == 1:
-            return {"kind": "pdf", "files": files}
-        return {"kind": "topic_page", "files": files}
+            return {"kind": "pdf", "files": files, "description": None}
+        return {"kind": "topic_page", "files": files, "description": None}
 
     if not isinstance(entry, dict):
         raise TypeError("Each topic entry must be a string, list, or mapping.")
 
+    description = entry.get("description")
+    normalized_description = None if description is None else str(description)
+
     if "link" in entry or "url" in entry or "external_url" in entry:
         href = str(entry.get("link") or entry.get("url") or entry.get("external_url"))
-        return {"kind": "external", "href": href}
+        return {"kind": "external", "href": href, "description": normalized_description}
+
+    if "file" in entry or "pdf" in entry:
+        raw_file = entry.get("file") or entry.get("pdf")
+        pdf = normalize_pdf_item(raw_file)
+        return {"kind": "pdf", "files": [pdf], "description": normalized_description}
 
     if "files" in entry or "pdfs" in entry:
         raw_files = entry.get("files") or entry.get("pdfs") or []
         files = [normalize_pdf_item(item) for item in raw_files]
         if len(files) == 1:
-            return {"kind": "pdf", "files": files}
-        return {"kind": "topic_page", "files": files}
+            return {"kind": "pdf", "files": files, "description": normalized_description}
+        return {"kind": "topic_page", "files": files, "description": normalized_description}
 
     if "title" in entry:
         pdf = normalize_pdf_item(entry)
-        return {"kind": "pdf", "files": [pdf]}
+        return {"kind": "pdf", "files": [pdf], "description": normalized_description}
 
     raise ValueError("Unsupported topic entry format.")
 
@@ -177,6 +190,7 @@ def render_index(data: dict[str, object]) -> str:
         for topic_name, raw_topic in topics.items():
             topic = normalize_topic_entry(raw_topic)
             kind = str(topic["kind"])
+            topic_description = topic.get("description")
 
             if kind == "external":
                 href = str(topic["href"])
@@ -193,12 +207,19 @@ def render_index(data: dict[str, object]) -> str:
                 link_attrs = ""
                 meta = f"{len(files)} PDFs"
 
+            description_html = ""
+            if topic_description:
+                description_html = (
+                    f'\n                <p class="item-description">{html.escape(str(topic_description))}</p>'
+                )
+
             items.append(
                 f"""            <li>
               <div class="topic-main">
                 <div class="topic-link-row">
                   <a class="topic-link" href="{href}"{link_attrs}>{html.escape(str(topic_name))}</a>
                 </div>
+{description_html}
               </div>
               <span class="topic-meta">{html.escape(meta)}</span>
             </li>"""
@@ -232,16 +253,31 @@ def render_topic_page(
     topic_name: str,
     topic: dict[str, object],
 ) -> str:
+    topic_description = topic.get("description")
     documents = []
     for file_entry in topic["files"]:
+        document_description = file_entry.get("description")
+        description_html = ""
+        if document_description:
+            description_html = (
+                f'\n            <p class="item-description">{html.escape(str(document_description))}</p>'
+            )
+
         documents.append(
             f"""          <li>
-            <a class="document-link" href="{asset_href(str(file_entry["path"]), "../")}" target="_blank" rel="noopener">
-              {html.escape(str(file_entry["title"]))}
-            </a>
+            <div class="topic-main">
+              <a class="document-link" href="{asset_href(str(file_entry["path"]), "../")}" target="_blank" rel="noopener">
+                {html.escape(str(file_entry["title"]))}
+              </a>
+{description_html}
+            </div>
             <span class="document-meta">PDF</span>
           </li>"""
         )
+
+    topic_description_html = ""
+    if topic_description:
+        topic_description_html = f'\n        <p class="item-description page-description">{html.escape(str(topic_description))}</p>'
 
     content = f"""    <main class="page">
 {aside_html(name, email, "../index.html")}
@@ -251,6 +287,7 @@ def render_topic_page(
         <div class="page-title-row">
           <h2 class="page-title">{html.escape(topic_name)}</h2>
         </div>
+{topic_description_html}
 
         <div class="panel">
           <ul class="document-list">
