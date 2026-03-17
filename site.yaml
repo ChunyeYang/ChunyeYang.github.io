@@ -4,20 +4,30 @@ email: chunye@umich.edu
 sections:
   Reading Notes:
     Etale Cohomology:
-      description: isthisgodd
+      description: Still updating, mosting following Lei Fu's book on etale cohomology. More detials of proof provided and some remarks and insights added.
       files:
         - title: Descent theory
-          description: 444
+          description: 
         - title: Etale and smooth morphisms
-          description: 33
+          description: 
         - title: Etale covering spaces
 
-    Intro to Homological Algebra: Intro to Homological Algebra
-
-    Rising Sea Notes and Exercises: 
+    FOAG Rising Sea Notes and Exercises: 
+      description: Still updating, notes following Vakil's FOAG, mainly doing all the exercises and provide some of my own insight. A little bit messy in the beginning as topics are mixed together but the later parts are more clear and follows the sections on FOAG
       files:
         - title: Blow-up
         - title: Sheaf of differentials
+
+    Notes on Fourier Mukai Transforms: 
+      description: Still updating, notes took during Summer 2025 Umich REU project on derived categroies and Fourier–Mukai Transforms
+      files:
+        - title: Triangulated categories
+        - title: Derived categroies
+        - title: Derived categories on coherent sheaves
+        - title: Derived category and canonical bundle part 1
+        - title: Fourier–Mukai transforms
+
+    Intro to Homological Algebra: Intro to Homological Algebra
 
   Research & Publications:
     Representation stability in the (co)homology of vertical configuration spaces: https://arxiv.org/abs/2412.01128
