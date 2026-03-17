@@ -13,13 +13,13 @@ sections:
         - title: Etale covering spaces
 
     FOAG Rising Sea Notes and Exercises: 
-      description: Still updating, notes following Vakil's FOAG, mainly doing all the exercises and provide some of my own insight. A little bit messy in the beginning as topics are mixed together but the later parts are more clear and follows the sections on FOAG
+      description: Still updating, notes following Vakil's FOAG, mainly doing all the exercises and provide some of my own insight. A little bit messy in the beginning as topics are mixed together but the later parts are more clear and alligns with the sections on FOAG.
       files:
         - title: Blow-up
         - title: Sheaf of differentials
 
     Notes on Fourier Mukai Transforms: 
-      description: Still updating, notes took during Summer 2025 Umich REU project on derived categroies and Fourier–Mukai Transforms
+      description: Still updating, notes took during Summer 2025 Umich REU project on derived categroies and Fourier–Mukai Transforms.
       files:
         - title: Triangulated categories
         - title: Derived categroies
