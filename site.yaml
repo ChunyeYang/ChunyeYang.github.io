@@ -7,7 +7,7 @@ sections:
       description: 111
       files:
         - title: Descent theory
-          description: 222
+          description: 444
         - title: Etale and smooth morphisms
           description: 333
         - title: Etale covering spaces
