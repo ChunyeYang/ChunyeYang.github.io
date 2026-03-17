@@ -294,10 +294,6 @@ def render_topic_page(
 {chr(10).join(documents)}
           </ul>
         </div>
-
-        <footer class="page-footer">
-          Documents are listed in the same order as they appear in <code>site.yaml</code>.
-        </footer>
       </section>
     </main>"""
 
