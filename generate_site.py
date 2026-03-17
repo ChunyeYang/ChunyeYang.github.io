@@ -306,10 +306,16 @@ def build_site() -> dict[str, object]:
     return data
 
 
-def git(args: list[str], *, env: dict[str, str] | None = None, capture_output: bool = False) -> subprocess.CompletedProcess[str]:
+def git(
+    args: list[str],
+    *,
+    env: dict[str, str] | None = None,
+    capture_output: bool = False,
+    check: bool = True,
+) -> subprocess.CompletedProcess[str]:
     return subprocess.run(
         ["git", *args],
-        check=True,
+        check=check,
         cwd=ROOT,
         env=env,
         text=True,
@@ -361,21 +367,13 @@ def deploy_site() -> None:
         stage_targets = [*STATIC_FILES, "topics", *pdf_paths]
         git(["add", "-A", "--", *stage_targets], env=git_env)
 
-        diff = git(["diff", "--cached", "--quiet"], env=git_env)
-        if diff.returncode == 0:
-            return
-    except subprocess.CalledProcessError as exc:
-        if exc.returncode != 1:
-            if askpass_path:
-                Path(askpass_path).unlink(missing_ok=True)
-            raise
-    else:
-        if askpass_path:
-            Path(askpass_path).unlink(missing_ok=True)
-        return
+        diff = git(["diff", "--cached", "--quiet"], env=git_env, check=False)
+        if diff.returncode not in (0, 1):
+            raise subprocess.CalledProcessError(diff.returncode, diff.args)
 
-    try:
-        git(["commit", "-m", "Deploy site update"], env=git_env)
+        if diff.returncode == 1:
+            git(["commit", "-m", "Deploy site update"], env=git_env)
+
         git(["push", "origin", "main"], env=git_env)
         git(["branch", "-f", "gh-pages", "main"], env=git_env)
         git(["push", "origin", "gh-pages"], env=git_env)
