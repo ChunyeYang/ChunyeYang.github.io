@@ -46,4 +46,4 @@ Rules:
 - for single-PDF mappings, you can use either `file: Some Title` or `files: [Some Title]`
 - PDF paths are derived automatically as `title + ".pdf"`
 - `python3 generate_site.py build` regenerates HTML only
-- `python3 generate_site.py deploy` regenerates HTML, commits, and pushes to `main` and `gh-pages`
+- `python3 generate_site.py deploy` regenerates HTML, runs `git add .`, commits with the fixed message `new content:`, pushes to `main`, and then syncs `gh-pages` from `main`

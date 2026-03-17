@@ -17,7 +17,7 @@ import yaml
 ROOT = Path(__file__).resolve().parent
 DATA_FILE = ROOT / "site.yaml"
 TOPICS_DIR = ROOT / "topics"
-STATIC_FILES = (".gitignore", "index.html", "styles.css", "site.yaml", "generate_site.py", "README.md")
+DEPLOY_COMMIT_MESSAGE = "new content:"
 
 
 def slugify(value: str) -> str:
@@ -392,20 +392,18 @@ def build_git_env() -> tuple[dict[str, str], str | None]:
 
 
 def deploy_site() -> None:
-    data = build_site()
-    pdf_paths = collect_referenced_pdfs(data)
+    build_site()
     git_env, askpass_path = build_git_env()
 
     try:
-        stage_targets = [*STATIC_FILES, "topics", *pdf_paths]
-        git(["add", "-A", "--", *stage_targets], env=git_env)
+        git(["add", "."], env=git_env)
 
         diff = git(["diff", "--cached", "--quiet"], env=git_env, check=False)
         if diff.returncode not in (0, 1):
             raise subprocess.CalledProcessError(diff.returncode, diff.args)
 
         if diff.returncode == 1:
-            git(["commit", "-m", "Deploy site update"], env=git_env)
+            git(["commit", "-m", DEPLOY_COMMIT_MESSAGE], env=git_env)
 
         git(["push", "origin", "main"], env=git_env)
         git(["branch", "-f", "gh-pages", "main"], env=git_env)

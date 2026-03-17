@@ -14,6 +14,10 @@ sections:
 
     Intro to Homological Algebra: Intro to Homological Algebra
 
+    Rising Sea Notes and Exercises: 
+      files:
+        - title: Blow-up
+        - title: Sheaf of differentials
 
   Research & Publications:
     Representation stability in the (co)homology of vertical configuration spaces: https://arxiv.org/abs/2412.01128
