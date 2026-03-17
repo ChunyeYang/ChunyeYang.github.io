@@ -15,8 +15,22 @@ sections:
     FOAG Rising Sea: 
       description: Still updating, notes following Vakil's FOAG, mainly doing all the exercises and provide some of my own insight. A little bit messy in the beginning as topics are mixed together but the later parts are more clear and alligns with the sections on FOAG.
       files:
+        - title: Proj separatedness and properness
+        - title: Fibered product
+        - title: Quasi-coherent sheaves
+        - title: Dimension
+        - title: Regularity and smoothness
+        - title: Line bundles maps to projective spaces and divisors
+        - title: Maps to projective spaces and properties of line bundles
+        - title: Projective morphisms
+        - title: Cech cohomology of quasicoherent sheaves
+        - title: More on Cech cohomology of quasicoherent sheaves
+        - title: Curves
+        - title: Numerical intersection theory
         - title: Blow-up
         - title: Sheaf of differentials
+        - title: Miscellaneous
+
 
     Fourier Mukai Transforms: 
       description: Still updating, notes took during Summer 2025 Umich REU project on derived categroies and Fourier–Mukai Transforms. Following Huybrechts's book on Fourier-Mukai transforms in algebraic geometry.
