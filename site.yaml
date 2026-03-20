@@ -6,8 +6,7 @@ sections:
     Etale Cohomology:
       description: Still updating, mosting following Lei Fu's book on etale cohomology. More detials of proof provided and some remarks and insights added.
       files:
-        - title: Preliminaries on field theory
-          description:
+        
         - title: Descent theory
           description: 
         - title: Etale and smooth morphisms
