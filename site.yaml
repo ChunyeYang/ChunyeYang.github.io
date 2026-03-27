@@ -8,11 +8,16 @@ sections:
       files:
         - title: Preliminaries on field theory
           description: 
+        - title: Preliminaries on Galois Theory
+          description: 
         - title: Descent theory
           description: 
         - title: Etale and smooth morphisms
           description: 
         - title: Etale covering spaces
+          description:
+        - title: Group cohomology and Galois cohomology
+          description: 
 
     FOAG Rising Sea: 
       description: Still updating, notes following Vakil's FOAG, mainly doing all the exercises and provide some of my own insight. A little bit messy in the beginning as topics are mixed together but the later parts are more clear and alligns with the sections on FOAG.
