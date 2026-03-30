@@ -8,7 +8,8 @@ sections:
       files:
         - title: Preliminaries on field theory
           description: 
-  
+        - title: Preliminaries on Galois Theory
+          description:
         - title: Descent theory
           description: 
         - title: Etale and smooth morphisms
