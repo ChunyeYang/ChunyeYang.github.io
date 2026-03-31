@@ -34,8 +34,9 @@ sections:
         - title: More on Cech cohomology of quasicoherent sheaves
         - title: Curves
         - title: Numerical intersection theory
-        - title: Blow-up
         - title: Sheaf of differentials
+        - title: Blow-up
+        - title: Spectral sequences and derived functors
         - title: Miscellaneous
 
 
