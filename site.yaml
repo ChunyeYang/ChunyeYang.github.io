@@ -39,8 +39,6 @@ sections:
         - title: Spectral sequences and derived functors
         - title: Miscellaneous
 
-
-
     Fourier Mukai Transforms: 
       description: Still updating, notes took during Summer 2025 Umich REU project on derived categroies and Fourier–Mukai Transforms. Following Huybrechts's book on Fourier-Mukai transforms in algebraic geometry.
       files:
