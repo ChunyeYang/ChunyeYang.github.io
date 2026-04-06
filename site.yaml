@@ -36,8 +36,7 @@ sections:
         - title: Numerical intersection theory
         - title: Sheaf of differentials
         - title: Blow-up
-        - title: Spectral sequences and derived functors
-        - title: Miscellaneous
+        
 
     Fourier Mukai Transforms: 
       description: Still updating, notes took during Summer 2025 Umich REU project on derived categroies and Fourier–Mukai Transforms. Following Huybrechts's book on Fourier-Mukai transforms in algebraic geometry.
