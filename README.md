@@ -18,17 +18,17 @@ sections:
     Etale Cohomology:
       description: Notes from a first reading seminar.
       files:
-        - title: Descent theory
+        - title: Etale Cohomology/Descent theory
           description: Descent data and fpqc descent.
-        - title: Etale and smooth morphisms
+        - title: Etale Cohomology/Etale and smooth morphisms
           description: Basic definitions and local structure.
-        - title: Etale covering spaces
+        - title: Etale Cohomology/Etale covering spaces
 
-    Intro to Homological Algebra: Intro to Homological Algebra
+    Intro to Homological Algebra: Intro to Homological Algebra/Intro to Homological Algebra
 
     Rising Sea Notes and Exercises:
       description: Short notes and exercises.
-      file: Blow-up
+      file: FOAG Rising Sea/Blow-up
 
   Research & Publications:
     Representation stability in the (co)homology of vertical configuration spaces:
@@ -43,7 +43,10 @@ Rules:
 - a list means multiple PDF titles, and the site generator will build a topic subpage
 - a topic mapping can include `description`
 - each file item can also include `description`
+- PDF references are resolved under `docs/` by default
+- PDF titles can include subfolders, such as `Etale Cohomology/Preliminaries on field theory`
 - for single-PDF mappings, you can use either `file: Some Title` or `files: [Some Title]`
-- PDF paths are derived automatically as `title + ".pdf"`
+- PDF paths are derived automatically as `docs/title.pdf`
+- if you want the page to show a different name, you can add `label: ...` to a file item
 - `python3 generate_site.py build` regenerates HTML only
 - `python3 generate_site.py deploy` regenerates HTML, runs `git add .`, commits with the fixed message `new content:`, pushes to `main`, and then syncs `gh-pages` from `main`

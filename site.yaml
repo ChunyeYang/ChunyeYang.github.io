@@ -6,50 +6,44 @@ sections:
     Etale Cohomology:
       description: Still updating, mosting following Lei Fu's book on etale cohomology. More detials of proof provided and some remarks and insights added.
       files:
-        - title: Preliminaries on field theory
-          description: 
-        - title: Preliminaries on Galois Theory
-          description:
-        - title: Descent theory
-          description: 
-        - title: Etale and smooth morphisms
-          description: 
-        - title: Etale covering spaces
-          description:
-        - title: Group cohomology and Galois cohomology
-          description: 
+        - title: Etale Cohomology/Preliminaries on field theory
+        - title: Etale Cohomology/Preliminaries on Galois Theory
+        - title: Etale Cohomology/Descent theory
+        - title: Etale Cohomology/Etale and smooth morphisms
+        - title: Etale Cohomology/Etale covering spaces
+        - title: Etale Cohomology/Group cohomology and Galois cohomology
 
     FOAG Rising Sea: 
       description: Still updating, notes following Vakil's FOAG, mainly doing all the exercises and provide some of my own insight. A little bit messy in the beginning as topics are mixed together but the later parts are more clear and alligns with the sections on FOAG.
       files:
-        - title: Proj separatedness and properness
-        - title: Fibered product
-        - title: Quasi-coherent sheaves
-        - title: Dimension
-        - title: Regularity and smoothness
-        - title: Line bundles maps to projective spaces and divisors
-        - title: Maps to projective spaces and properties of line bundles
-        - title: Projective morphisms
-        - title: Cech cohomology of quasicoherent sheaves
-        - title: More on Cech cohomology of quasicoherent sheaves
-        - title: Curves
-        - title: Numerical intersection theory
-        - title: Sheaf of differentials
-        - title: Blow-up
-        - title: Spectral sequences and derived functors
-        - title: Flatness
-        - title: Miscellaneous
+        - title: FOAG Rising Sea/Proj separatedness and properness
+        - title: FOAG Rising Sea/Fibered product
+        - title: FOAG Rising Sea/Quasi-coherent sheaves
+        - title: FOAG Rising Sea/Dimension
+        - title: FOAG Rising Sea/Regularity and smoothness
+        - title: FOAG Rising Sea/Line bundles maps to projective spaces and divisors
+        - title: FOAG Rising Sea/Maps to projective spaces and properties of line bundles
+        - title: FOAG Rising Sea/Projective morphisms
+        - title: FOAG Rising Sea/Cech cohomology of quasicoherent sheaves
+        - title: FOAG Rising Sea/More on Cech cohomology of quasicoherent sheaves
+        - title: FOAG Rising Sea/Curves
+        - title: FOAG Rising Sea/Numerical intersection theory
+        - title: FOAG Rising Sea/Sheaf of differentials
+        - title: FOAG Rising Sea/Blow-up
+        - title: FOAG Rising Sea/Spectral sequences and derived functors
+        - title: FOAG Rising Sea/Flatness
+        - title: FOAG Rising Sea/Miscellaneous
 
     Fourier Mukai Transforms: 
       description: Still updating, notes took during Summer 2025 Umich REU project on derived categroies and Fourier–Mukai Transforms. Following Huybrechts's book on Fourier-Mukai transforms in algebraic geometry.
       files:
-        - title: Triangulated categories
-        - title: Derived categroies
-        - title: Derived categories on coherent sheaves
-        - title: Derived category and canonical bundle part 1
-        - title: Fourier–Mukai transforms
+        - title: Fourier Mukai Transforms/Triangulated categories
+        - title: Fourier Mukai Transforms/Derived categroies
+        - title: Fourier Mukai Transforms/Derived categories on coherent sheaves
+        - title: Fourier Mukai Transforms/Derived category and canonical bundle part 1
+        - title: Fourier Mukai Transforms/Fourier–Mukai transforms
 
-    Intro to Homological Algebra: Intro to Homological Algebra
+    Intro to Homological Algebra: Intro to Homological Algebra/Intro to Homological Algebra
 
   Research & Publications:
     Representation stability in the (co)homology of vertical configuration spaces: https://arxiv.org/abs/2412.01128

@@ -17,6 +17,7 @@ import yaml
 ROOT = Path(__file__).resolve().parent
 DATA_FILE = ROOT / "site.yaml"
 TOPICS_DIR = ROOT / "topics"
+DOCS_DIR = ROOT / "docs"
 DEPLOY_COMMIT_MESSAGE = "new content:"
 
 
@@ -30,8 +31,18 @@ def is_url(value: str) -> bool:
     return value.startswith("http://") or value.startswith("https://")
 
 
-def pdf_path_from_title(title: str) -> str:
-    return f"{title}.pdf"
+def pdf_path_from_reference(reference: str) -> str:
+    path = Path(reference)
+    if path.is_absolute():
+        raise ValueError("PDF references must be relative paths.")
+
+    if path.suffix.lower() != ".pdf":
+        path = path.with_suffix(".pdf")
+
+    if not path.parts or path.parts[0] != DOCS_DIR.name:
+        path = Path(DOCS_DIR.name) / path
+
+    return path.as_posix()
 
 
 def asset_href(path: str, prefix: str = "") -> str:
@@ -74,17 +85,24 @@ def aside_html(name: str, email: str, home_href: str) -> str:
 
 def normalize_pdf_item(item: object) -> dict[str, str | None]:
     if isinstance(item, str):
-        return {"title": item, "path": pdf_path_from_title(item), "description": None}
+        return {
+            "title": item,
+            "display_title": Path(item).name,
+            "path": pdf_path_from_reference(item),
+            "description": None,
+        }
 
     if not isinstance(item, dict):
         raise TypeError("Each PDF item must be a string or mapping.")
 
     if "title" in item:
         title = str(item["title"])
-        path = str(item.get("path") or pdf_path_from_title(title))
+        label = str(item.get("label") or item.get("display_title") or Path(title).name)
+        path = pdf_path_from_reference(str(item.get("path") or title))
         description = item.get("description")
         return {
             "title": title,
+            "display_title": label,
             "path": path,
             "description": None if description is None else str(description),
         }
@@ -267,7 +285,7 @@ def render_topic_page(
             f"""          <li>
             <div class="topic-main">
               <a class="document-link" href="{asset_href(str(file_entry["path"]), "../")}" target="_blank" rel="noopener">
-                {html.escape(str(file_entry["title"]))}
+                {html.escape(str(file_entry["display_title"]))}
               </a>
 {description_html}
             </div>
