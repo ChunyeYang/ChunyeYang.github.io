@@ -4,7 +4,7 @@ email: chunye@umich.edu
 sections:
   Reading Notes:
     Etale Cohomology:
-      description: Still updating, mosting following Lei Fu's book on etale cohomology. More detials of proof provided and some remarks and insights added.
+      description: Still updating, mosting following Lei Fu's book on etale cohomology. More detials of proof provided and some remarks and insights added. Test
       files:
         - title: Etale Cohomology/Preliminaries on field theory
         - title: Etale Cohomology/Preliminaries on Galois Theory
