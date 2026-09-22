@@ -45,5 +45,14 @@ sections:
 
     Intro to Homological Algebra: Intro to Homological Algebra/Intro to Homological Algebra
 
+    Complex Algebraic Geometry:
+      description: >-
+        Still updating. Course notes for the algebraic geometry class on compact Riemann surfaces
+        offered at the University of Maryland in fall 2026. These notes can be read on their own
+        with a solid background in one-variable complex analysis. Reading them alongside the
+        FOAG notes may help illustrate the connections and differences between the two theories.
+      files:
+        - title: Compact Riemann Surface/Algebraic Geometry on Compact Riemann Surfaces Notes
+
   Research & Publications:
     Representation stability in the (co)homology of vertical configuration spaces: https://arxiv.org/abs/2412.01128
