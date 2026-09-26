@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import html
 import os
 import re
@@ -47,7 +48,8 @@ def pdf_path_from_reference(reference: str) -> str:
 
 def asset_href(path: str, prefix: str = "") -> str:
     encoded = "/".join(quote(part, safe="._-()") for part in Path(path).parts)
-    return f"{prefix}{encoded}"
+    version = hashlib.sha256((ROOT / path).read_bytes()).hexdigest()[:12]
+    return f"{prefix}{encoded}?v={version}"
 
 
 def page_shell(title: str, content: str, root_prefix: str = "") -> str:
