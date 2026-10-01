@@ -56,8 +56,17 @@ sections:
         - title: Compact Riemann Surface/Algebraic Geometry on Compact Riemann Surfaces Notes
         - title: Compact Riemann Surface/Write-up on Runge’s Theorem and the d-bar Equation
 
-  # Add seminar topics here using the same format as Reading Notes.
-  Seminar Notes: {}
+  Seminar Notes:
+    Seminar on Elliptic Curves and Modular Forms:
+      description: >-
+        This will be the notes for the Seminar on Elliptic Curves and Modular Forms
+        during the fall semester of 2026 at the University of Maryland. This seminar
+        is an introductory level treatment on the topics of elliptic curves and
+        modular forms, following Neal Koblitz's book Introduction to Modular Forms
+        and elliptic curves.
+      files:
+        - title: Seminar on Elliptic Curves and Modular Forms/Seminar on Modular Forms and Elliptic Curves
+        - title: Seminar on Elliptic Curves and Modular Forms/Write-up on Hasse Weil
 
   Research & Publications:
     Representation stability in the (co)homology of vertical configuration spaces: https://arxiv.org/abs/2412.01128
