@@ -56,5 +56,8 @@ sections:
         - title: Compact Riemann Surface/Algebraic Geometry on Compact Riemann Surfaces Notes
         - title: Compact Riemann Surface/Write-up on Runge’s Theorem and the d-bar Equation
 
+  # Add seminar topics here using the same format as Reading Notes.
+  Seminar Notes: {}
+
   Research & Publications:
     Representation stability in the (co)homology of vertical configuration spaces: https://arxiv.org/abs/2412.01128

@@ -18,6 +18,7 @@ import yaml
 ROOT = Path(__file__).resolve().parent
 DATA_FILE = ROOT / "site.yaml"
 TOPICS_DIR = ROOT / "topics"
+SECTIONS_DIR = ROOT / "sections"
 DOCS_DIR = ROOT / "docs"
 DEPLOY_COMMIT_MESSAGE = "new content:"
 
@@ -190,10 +191,32 @@ def validate_pdf_files(pdf_paths: list[str]) -> None:
         raise FileNotFoundError(f"Referenced PDF files are missing:\n{formatted}")
 
 
+def section_page_filename(section_name: str) -> str:
+    return f"{slugify(section_name)}.html"
+
+
 def render_index(data: dict[str, object]) -> str:
     name = str(data["name"])
+    links = []
+    for section_name in data["sections"]:
+        label = html.escape(str(section_name))
+        href = f"sections/{section_page_filename(str(section_name))}"
+        links.append(f'''        <div class="panel">
+          <h2 class="section-title"><a class="section-link" href="{href}">{label} <span aria-hidden="true">&rarr;</span></a></h2>
+        </div>''')
+    content = f'''    <main class="page">
+{aside_html(name, str(data["email"]), str(data.get("bio") or ""))}
+      <nav class="page-content" aria-label="Website sections">
+{chr(10).join(links)}
+      </nav>
+    </main>'''
+    return page_shell(f"{name} | Personal Website", content)
+
+
+def render_section_page(data: dict[str, object], selected_section: str) -> str:
+    name = str(data["name"])
     email = str(data["email"])
-    sections = data["sections"]
+    sections = {selected_section: data["sections"][selected_section]}
 
     panels: list[str] = []
     for section_name, topics in sections.items():
@@ -218,12 +241,12 @@ def render_index(data: dict[str, object]) -> str:
                 meta = "Link"
             elif kind == "pdf":
                 file_entry = topic["files"][0]
-                href = asset_href(str(file_entry["path"]))
+                href = asset_href(str(file_entry["path"]), "../")
                 link_attrs = ' target="_blank" rel="noopener"'
                 meta = "PDF"
             else:
                 files = topic["files"]
-                href = f"topics/{topic_page_filename(str(section_name), str(topic_name))}"
+                href = f"../topics/{topic_page_filename(str(section_name), str(topic_name))}"
                 link_attrs = ""
                 meta = f"{len(files)} PDFs"
 
@@ -258,11 +281,12 @@ def render_index(data: dict[str, object]) -> str:
 {aside_html(name, email, str(data.get("bio") or ""))}
 
       <section class="page-content">
+        <p class="breadcrumbs"><a href="../index.html">Home</a> / {html.escape(selected_section)}</p>
 {chr(10).join(panels)}
       </section>
     </main>"""
 
-    return page_shell(f"{name} | Personal Website", content)
+    return page_shell(f"{selected_section} | {name}", content, root_prefix="../")
 
 
 def render_topic_page(
@@ -304,7 +328,7 @@ def render_topic_page(
 {aside_html(name, email, bio)}
 
       <section class="page-content">
-        <p class="breadcrumbs"><a href="../index.html">Home</a> / {html.escape(section_name)}</p>
+        <p class="breadcrumbs"><a href="../index.html">Home</a> / <a href="../sections/{section_page_filename(section_name)}">{html.escape(section_name)}</a></p>
         <div class="page-title-row">
           <h2 class="page-title">{html.escape(topic_name)}</h2>
         </div>
@@ -329,6 +353,14 @@ def build_site() -> dict[str, object]:
     TOPICS_DIR.mkdir(exist_ok=True)
     for old_page in TOPICS_DIR.glob("*.html"):
         old_page.unlink()
+
+    SECTIONS_DIR.mkdir(exist_ok=True)
+    for old_page in SECTIONS_DIR.glob("*.html"):
+        old_page.unlink()
+    for section_name in data["sections"]:
+        (SECTIONS_DIR / section_page_filename(str(section_name))).write_text(
+            render_section_page(data, str(section_name)), encoding="utf-8"
+        )
 
     (ROOT / "index.html").write_text(render_index(data), encoding="utf-8")
 
