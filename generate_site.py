@@ -68,7 +68,7 @@ def page_shell(title: str, content: str, root_prefix: str = "") -> str:
 """
 
 
-def aside_html(name: str, email: str, home_href: str) -> str:
+def aside_html(name: str, email: str, bio: str) -> str:
     return f"""      <aside class="page-aside">
         <h1 class="site-name">{html.escape(name)}</h1>
         <p class="site-role">Personal Website</p>
@@ -79,8 +79,8 @@ def aside_html(name: str, email: str, home_href: str) -> str:
         </div>
 
         <div class="contact-block">
-          <p class="label">Navigation</p>
-          <p><a href="{home_href}">Home</a></p>
+          <p class="label">About me</p>
+          <p class="bio">{html.escape(bio)}</p>
         </div>
       </aside>"""
 
@@ -255,7 +255,7 @@ def render_index(data: dict[str, object]) -> str:
         )
 
     content = f"""    <main class="page">
-{aside_html(name, email, "index.html")}
+{aside_html(name, email, str(data.get("bio") or ""))}
 
       <section class="page-content">
 {chr(10).join(panels)}
@@ -269,6 +269,7 @@ def render_topic_page(
     *,
     name: str,
     email: str,
+    bio: str,
     section_name: str,
     topic_name: str,
     topic: dict[str, object],
@@ -300,7 +301,7 @@ def render_topic_page(
         topic_description_html = f'\n        <p class="item-description page-description">{html.escape(str(topic_description))}</p>'
 
     content = f"""    <main class="page">
-{aside_html(name, email, "../index.html")}
+{aside_html(name, email, bio)}
 
       <section class="page-content">
         <p class="breadcrumbs"><a href="../index.html">Home</a> / {html.escape(section_name)}</p>
@@ -349,6 +350,7 @@ def build_site() -> dict[str, object]:
                 render_topic_page(
                     name=name,
                     email=email,
+                    bio=str(data.get("bio") or ""),
                     section_name=str(section_name),
                     topic_name=str(topic_name),
                     topic=topic,

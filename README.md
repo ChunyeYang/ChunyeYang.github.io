@@ -12,6 +12,9 @@ Static GitHub Pages site for Chunye Yang.
 ```yaml
 name: Chunye Yang
 email: chunye@umich.edu
+bio: |
+  Write your self-description here.
+  You can use multiple lines.
 
 sections:
   Reading Notes:
@@ -35,6 +38,8 @@ sections:
       link: https://arxiv.org/abs/xxxx.xxxxx
       description: Preprint on representation stability in vertical configuration spaces.
 ```
+
+Edit the top-level `bio` field to update the “About me” text beneath your email on every page. Use `bio: |` with indented lines to preserve line breaks. Leave it blank until you are ready to add your description. Text is displayed as plain text, not HTML. Run `python3 generate_site.py deploy` to publish it.
 
 Rules:
 - top-level `sections` controls homepage section order

@@ -90,6 +90,12 @@ a:hover {
   font-size: 18px;
 }
 
+.contact-block .bio {
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+  margin-top: 8px;
+}
+
 .intro {
   max-width: 56ch;
   margin-bottom: 40px;
